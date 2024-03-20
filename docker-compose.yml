@@ -1,0 +1,30 @@
+version: "3.8"
+
+
+services:
+    mysql:
+      image: mysql:8.0.27
+      restart: always
+      ports:
+        - "3306:3306"
+      logging:
+        options:
+          max-size: "100k"
+          max-file: "2"
+      env_file: ./mysql/mysql.env
+      volumes:
+        - "./mysql/data/mysql:/var/lib/mysql"
+        - "./mysql/settings.cnf:/etc/mysql/conf.d/custom-settings.cnf:ro"
+      command: --max_connections=1000   
+
+
+
+    redis:
+      image: redis:6.2.6-alpine
+      restart: always
+      ports:
+        - 6379:6379
+      volumes:
+        - ./redis/config:/docker/config
+        - ./redis/data:/data 
+      command: redis-server  /docker/config/redis.conf
